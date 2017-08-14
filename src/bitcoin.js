@@ -53,4 +53,37 @@ g.append("path")
     .attr("stroke", "steelblue")
     .attr("stroke-width", 1.5)
     .attr("class", "liness")
-    .attr("d", line)
+    .attr("d", line);
+    
+redraw = function(){
+
+  var dataNew = [{"Date":"2019-09-15","ClosePrice":4000.44},{"Date":"2019-09-15","ClosePrice":3200.2},{"Date":"2019-09-15","ClosePrice":9000.25},{"Date":"2019-09-15","ClosePrice":6000.74}]
+  
+ var xs = data.map(function(d) { return d.Date; }) 
+ 
+ var xs = xs.concat("2019-09-15", "2019-09-15", "2019-09-15", "2019-09-15", "2019-09-15", "2019-09-15", "2019-09-15");
+ 
+  // update scale domains
+  x.domain(xs);
+  y.domain(
+    [
+    d3.min(data, function(d) { return d.ClosePrice; }), 
+    d3.max(dataNew, function(d) { return d.ClosePrice; })
+    ]
+    );
+  
+  // redraw axis  
+  d3.selectAll(".axis--x")
+    .call(d3.axisBottom(x).tickValues(x.domain().filter(function(d, i) { return !(i % 30); })))
+    /*
+    .selectAll("text")  
+      .style("text-anchor", "end")
+      .attr("dx", "-1.20em")
+      .attr("dy", ".2em")
+      .attr("transform", "rotate(-65)")*/
+        
+  g.selectAll(".axis--y")
+    .transition()
+    .call(d3.axisLeft(y))
+    
+}
