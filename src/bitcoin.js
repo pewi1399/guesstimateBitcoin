@@ -26,6 +26,13 @@ y.domain(
 var line = d3.line()
     .x(function(d) { return x(d.Date); })
     .y(function(d) { return y(d.ClosePrice); });
+    
+    
+// gridlines in y axis function
+function make_y_gridlines() {		
+    return d3.axisLeft(y)
+        .ticks(3)
+}
 
 g.append("g")
   .attr("class", "axis axis--x")
@@ -36,17 +43,48 @@ g.append("g")
         .attr("dx", "-1.20em")
         .attr("dy", ".2em")
         .attr("transform", "rotate(-65)")
+        
+// add the Y gridlines
+/*g.append("g")			
+    .attr("class", "grid")
+    .call(make_y_gridlines()
+        .tickSize(-width)
+        .tickFormat("")
+    )
+*/
+// add bitcoin watermark
+g.selectAll(".watermark")
+  .data([1])
+  .enter()
+  .append("text")
+  .attr('font-family', 'FontAwesome')
+  .attr("y", height/1.8)
+  .attr("x", width/2.5)
+  .attr("font-size", "160")
+  .attr("fill", "whitesmoke")
+  .text(function(d) { return '\uf15a' }); 
+
+g.selectAll(".horizontalGrid").data(y.ticks(5)).enter()
+    .append("line")
+    .attr("class","horizontalGrid")
+    .attr("x1", 0)
+    .attr("x2", width)
+    .attr("y1", function(d){ return y(d);})
+    .attr("y2", function(d){ return y(d);})
+    .attr("stroke","lightgrey")
+
+
 
 g.append("g")
   .attr("class", "axis axis--y")
-  .call(d3.axisLeft(y))
-.append("text")
+  .call(d3.axisLeft(y))  
+  .append("text")
   .attr("transform", "rotate(-90)")
   .attr("y", 6)
   .attr("dy", "0.71em")
   .attr("fill", "#000")
   .text("USD");
-
+  
 g.append("path")
     .datum(data)
     .attr("fill", "none")
