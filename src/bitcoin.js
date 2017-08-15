@@ -7,6 +7,8 @@ var color = d3.scaleOrdinal(d3.schemeCategory20);
 var x = d3.scaleBand().rangeRound([0, width]).padding(0.1),
     y = d3.scaleLinear().rangeRound([height, 0]);
 
+var parseTime = d3.timeParse("%Y-%m-%d");
+
 var svg = d3.select("#panel1")
         .append("svg")
         .attr("preserveAspectRatio", "xMinYMin meet")
@@ -15,7 +17,7 @@ var svg = d3.select("#panel1")
 
 g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-x.domain(data.map(function(d) { return d.Date; }));
+x.domain(data.map(function(d) { return parseTime(d.Date); }));
 y.domain(
   [
   d3.min(data, function(d) { return d.ClosePrice; }), 
@@ -24,7 +26,7 @@ y.domain(
   );
   
 var line = d3.line()
-    .x(function(d) { return x(d.Date); })
+    .x(function(d) { return x(parseTime(d.Date)); })
     .y(function(d) { return y(d.ClosePrice); });
     
     
@@ -97,9 +99,11 @@ redraw = function(){
 
   var dataNew = [{"Date":"2019-09-15","ClosePrice":4000.44},{"Date":"2019-09-15","ClosePrice":3200.2},{"Date":"2019-09-15","ClosePrice":9000.25},{"Date":"2019-09-15","ClosePrice":6000.74}]
   
- var xs = data.map(function(d) { return d.Date; }) 
+  var xs = data.map(function(d) { return d.Date; }) 
  
- var xs = xs.concat("2019-09-15", "2019-09-15", "2019-09-15", "2019-09-15", "2019-09-15", "2019-09-15", "2019-09-15");
+  var xs = xs.concat("2025-09-15", "2025-09-15", "2025-09-15", "2025-09-15", "2025-09-15", "2025-09-15", "2025-09-15");
+ 
+  var xs = xs.map(function(d) { return parseTime(d); }) 
  
   // update scale domains
   x.domain(xs);
@@ -112,7 +116,7 @@ redraw = function(){
   
   // redraw axis  
   d3.selectAll(".axis--x")
-    .call(d3.axisBottom(x).tickValues(x.domain().filter(function(d, i) { return !(i % 30); })))
+    .call(d3.axisBottom(x))//.tickValues(x.domain().filter(function(d, i) { return !(i % 30); })))
     /*
     .selectAll("text")  
       .style("text-anchor", "end")
