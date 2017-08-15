@@ -85,7 +85,7 @@ g.append("g")
   .attr("fill", "#000")
   .text("USD");
   
-g.append("path")
+var path = g.append("path")
     .datum(data)
     .attr("fill", "none")
     .attr("stroke", "steelblue")
@@ -98,6 +98,15 @@ g.append("path")
               .text("Month: " + Math.random());
       });
 */
+
+var totalLength = path.node().getTotalLength();
+
+path
+  .attr("stroke-dasharray", totalLength + " " + totalLength)
+  .attr("stroke-dashoffset", totalLength)
+  .transition()
+    .duration(3000)
+    .attr("stroke-dashoffset", 0);
 
 svg.append("g")
     .attr("class", "infowin")
