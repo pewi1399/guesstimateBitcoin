@@ -60,7 +60,7 @@ g.selectAll(".watermark")
   .enter()
   .append("text")
   .attr('font-family', 'FontAwesome')
-  .attr("y", height/1.8)
+  .attr("y", height/1.65)
   .attr("x", width/2.5)
   .attr("font-size", "160")
   .attr("fill", "whitesmoke")
@@ -91,11 +91,23 @@ g.append("path")
     .attr("stroke", "steelblue")
     .attr("stroke-width", 1.5)
     .attr("class", "liness")
-    .attr("d", line);
+    .attr("d", line)
+    .on("mouseover", function(d){
+          // alert("Year: " + d.Year + ": " + d.Celsius + " Celsius");
+          d3.select("#_yr")
+              .text("Month: " + Math.random());
+      });
+
+svg.append("g")
+    .attr("class", "infowin")
+    .attr("transform", "translate(70, 30)")
+    .append("text")
+    .attr("id", "_yr");
     
 redraw = function(){
 
-  var dataNew = [{"Date":"2017-09-15","ClosePrice":4000.44},{"Date":"2017-09-15","ClosePrice":3200.2},{"Date":"2017-09-15","ClosePrice":9000.25},{"Date":"2017-09-15","ClosePrice":6000.74}]
+  var dataNew = [{"Date":"2017-09-15","ClosePrice":4000.44},{"Date":"2017-09-15","ClosePrice":3200.2},{"Date":"2017-09-15","ClosePrice":9000.25},{"Date":"2017-09-15","ClosePrice":6000.74}
+  ,{"Date":"2017-09-15","ClosePrice":3330.44},{"Date":"2017-09-15","ClosePrice":2045.2},{"Date":"2017-09-15","ClosePrice":4300.25},{"Date":"2017-09-15","ClosePrice":1000.74}]
   
   var xs = data.map(function(d) { return d.Date; }) 
  
@@ -150,8 +162,7 @@ redraw = function(){
     .attr("r", 0)
     .attr("fill", "lightgrey")
     .transition()
-    .duration(function(d, i){return i*1000;})    
-    .delay(1500)
+    .delay(function(d, i){return i*1500;})
     .attr("r", 4)
     .transition()
     .attr("r", 3)
