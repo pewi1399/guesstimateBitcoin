@@ -4,7 +4,7 @@ var margin = {top: 33, left: 40, right: 30, bottom: 75},
 
 var color = d3.scaleOrdinal(d3.schemeCategory20);
 
-var x = d3.scaleBand().rangeRound([0, width]).padding(0.1),
+var x = d3.scaleTime().range([0, width]),
     y = d3.scaleLinear().rangeRound([height, 0]);
 
 var parseTime = d3.timeParse("%Y-%m-%d");
@@ -17,7 +17,7 @@ var svg = d3.select("#panel1")
 
 g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-x.domain(data.map(function(d) { return parseTime(d.Date); }));
+x.domain(d3.extent(data, function(d) { return parseTime(d.Date); }));
 y.domain(
   [
   d3.min(data, function(d) { return d.ClosePrice; }), 
@@ -39,7 +39,7 @@ function make_y_gridlines() {
 g.append("g")
   .attr("class", "axis axis--x")
   .attr("transform", "translate(0," + height + ")")
-  .call(d3.axisBottom(x).tickValues(x.domain().filter(function(d, i) { return !(i % 30); })))
+  .call(d3.axisBottom(x))//.tickFormat(d3.timeFormat("%Y-%m-%d")))//.tickValues(x.domain().filter(function(d, i) { return !(i % 1); })).tickFormat(d3.timeFormat("%Y-%m-%d")))
       .selectAll("text")  
         .style("text-anchor", "end")
         .attr("dx", "-1.20em")
@@ -75,8 +75,6 @@ g.selectAll(".horizontalGrid").data(y.ticks(5)).enter()
     .attr("y2", function(d){ return y(d);})
     .attr("stroke","lightgrey")
 
-
-
 g.append("g")
   .attr("class", "axis axis--y")
   .call(d3.axisLeft(y))  
@@ -97,16 +95,16 @@ g.append("path")
     
 redraw = function(){
 
-  var dataNew = [{"Date":"2019-09-15","ClosePrice":4000.44},{"Date":"2019-09-15","ClosePrice":3200.2},{"Date":"2019-09-15","ClosePrice":9000.25},{"Date":"2019-09-15","ClosePrice":6000.74}]
+  var dataNew = [{"Date":"2017-09-15","ClosePrice":4000.44},{"Date":"2017-09-15","ClosePrice":3200.2},{"Date":"2017-09-15","ClosePrice":9000.25},{"Date":"2017-09-15","ClosePrice":6000.74}]
   
   var xs = data.map(function(d) { return d.Date; }) 
  
-  var xs = xs.concat("2025-09-15", "2025-09-15", "2025-09-15", "2025-09-15", "2025-09-15", "2025-09-15", "2025-09-15");
+  var xs = xs.concat("2017-09-15", "2017-10-15", "2017-10-15", "2017-09-15", "2017-09-15", "2017-09-15", "2017-09-15");
  
   var xs = xs.map(function(d) { return parseTime(d); }) 
  
   // update scale domains
-  x.domain(xs);
+  x.domain(d3.extent(xs));
   y.domain(
     [
     d3.min(data, function(d) { return d.ClosePrice; }), 
@@ -116,16 +114,47 @@ redraw = function(){
   
   // redraw axis  
   d3.selectAll(".axis--x")
-    .call(d3.axisBottom(x))//.tickValues(x.domain().filter(function(d, i) { return !(i % 30); })))
-    /*
+  .transition()
+  .call(d3.axisBottom(x))//.tickValues(x.domain().filter(function(d, i) { return !(i % 10); })).tickFormat(d3.timeFormat("%Y-%m-%d")))
     .selectAll("text")  
       .style("text-anchor", "end")
       .attr("dx", "-1.20em")
       .attr("dy", ".2em")
-      .attr("transform", "rotate(-65)")*/
+      .attr("transform", "rotate(-65)")
         
   g.selectAll(".axis--y")
     .transition()
     .call(d3.axisLeft(y))
+
+  g.selectAll(".horizontalGrid").remove()
+
+  g.selectAll(".horizontalGrid").data(y.ticks(5)).enter()
+    .append("line")
+    .attr("class","horizontalGrid")
+    .attr("x1", 0)
+    .attr("x2", width)
+    .attr("y1", function(d){ return y(d);})
+    .attr("y2", function(d){ return y(d);})
+    .attr("stroke","lightgrey")
     
+  d3.select(".liness")
+  .transition()
+    .attr("d", line);
+
+  g.selectAll(".dots")
+    .data(dataNew)
+    .enter()
+    .append("circle")
+    .attr("cx", function(d){return x(parseTime(d.Date))})
+    .attr("cy", function(d){return y(d.ClosePrice)})
+    .attr("r", 0)
+    .attr("fill", "lightgrey")
+    .transition()
+    .duration(function(d, i){return i*1000;})    
+    .delay(1500)
+    .attr("r", 4)
+    .transition()
+    .attr("r", 3)
+    .attr("fill", "royalblue")
+       
 }
