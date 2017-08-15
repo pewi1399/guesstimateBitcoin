@@ -92,11 +92,12 @@ g.append("path")
     .attr("stroke-width", 1.5)
     .attr("class", "liness")
     .attr("d", line)
-    .on("mouseover", function(d){
+    /*.on("mouseover", function(d){
           // alert("Year: " + d.Year + ": " + d.Celsius + " Celsius");
           d3.select("#_yr")
               .text("Month: " + Math.random());
       });
+*/
 
 svg.append("g")
     .attr("class", "infowin")
