@@ -1,6 +1,6 @@
 var margin = {top: 33, left: 40, right: 30, bottom: 75},
     width  = 960 - margin.left - margin.right,
-    height = 500  - margin.top  - margin.bottom
+    height = 650  - margin.top  - margin.bottom
 
 var color = d3.scaleOrdinal(d3.schemeCategory20);
 
@@ -60,7 +60,7 @@ g.selectAll(".watermark")
   .enter()
   .append("text")
   .attr('font-family', 'FontAwesome')
-  .attr("y", height/1.65)
+  .attr("y", height/1.73)
   .attr("x", width/2.5)
   .attr("font-size", "160")
   .attr("fill", "whitesmoke")

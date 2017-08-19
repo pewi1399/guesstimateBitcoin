@@ -66,30 +66,52 @@ var public_spreadsheet_url = 'https://docs.google.com/spreadsheets/d/1wBMaVV6LQ7
 
 <div class = "col-md-10 col-md-offset-1" id="fullpage">
   <!-- // first row -->
-	<div class = "col-md-12" id = "panel1"></div>
-  <div class = "col-md-12" id = "panel2">
-  <a class="btn btn-lg btn-success" href="#" onclick="redraw()">
-    <i class="fa fa-btc fa-2x pull-left"></i> Fejka gissningar <br> för 2017-09-15 </a>
-</div>
-</div>
-
-</body>
+	<div class = "col-md-9" id = "panel1"></div>
+  <div class = "col-md-3" id = "panel2">
+  <p>How much do you think a bitcoin will be selling for 30 days from now?</p>
+  <br/>
   
+  
+  
+  <script type="text/javascript">var submitted=false;</script>
+    <iframe name="hidden_iframe" id="hidden_iframe" style="display:none;"></iframe>
+
+  <form action="https://docs.google.com/forms/d/e/1FAIpQLSepDAQKvgvnv4lYuXMm5b9ep22jriDucmLHKy_PVz97dqd60g/formResponse" method="post" id="application-form" target="hidden_iframe" onsubmit="submitted=true;">
+    <div class="row">
+      <div class="col-md-5">
+        <div class="form-group">
+          <input type="text" name="entry.846626010" value="" class="form-control name" id="entry.846626010" dir="auto" aria-label="Name  " aria-required="true" placeholder="USD">
+        </div>
+      </div>
+    </div>
+    <div class="col-md-5">
+      <div class="form-group">
+        <input type="submit" id="submit" class="btn btn-custom" name="submit" value="Submit forecast">
+      </div>
+    </div>
+</form>
+</div>
+  
+</div>
+
+
+
   <script src="src/bitcoin.js"></script>
-<script>
-	  var public_spreadsheet_url = 'https://docs.google.com/spreadsheets/d/1wBMaVV6LQ7wKMcbagN_VjEotJGOgX8veGSRKb-Hjy9Q/pubhtml';
-	  
-	  function init() {
-		Tabletop.init( { key: public_spreadsheet_url,
-						 callback: showInfo,
-						 simpleSheet: true } )
-	  }
-
-
-//  function showInfo(data, tabletop) {
-//    console.log(data)
-//    
-//    
-//  }
-</script>
+  <script>
+  	  var public_spreadsheet_url = 'https://docs.google.com/spreadsheets/d/1wBMaVV6LQ7wKMcbagN_VjEotJGOgX8veGSRKb-Hjy9Q/pubhtml';
+  	  
+  	  function init() {
+  		Tabletop.init( { key: public_spreadsheet_url,
+  						 callback: showInfo,
+  						 simpleSheet: true } )
+  	  }
+  
+  
+  //  function showInfo(data, tabletop) {
+  //    console.log(data)
+  //    
+  //    
+  //  }
+  </script>
+</body>
 </html>
