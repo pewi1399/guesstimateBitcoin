@@ -20,7 +20,7 @@ g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.
 x.domain(d3.extent(data, function(d) { return parseTime(d.Date); }));
 y.domain(
   [
-  d3.min(data, function(d) { return d.ClosePrice; }), 
+  0, 
   d3.max(data, function(d) { return d.ClosePrice; })
   ]
   );
@@ -132,17 +132,23 @@ showInfo  = function(data, tabletop){
   var xs = xs.concat("2017-09-15", "2017-10-15", "2017-10-15", "2017-09-15", "2017-09-15", "2017-09-15", "2017-09-15");
   */
   var parseTime2 = d3.timeParse("%d/%m/%Y");
+  
+  Date.prototype.addDays = function(days) {
+  var dat = new Date(this.valueOf());
+  dat.setDate(dat.getDate() + days);
+  return dat;
+}
 
   // update scale domains
   x.domain([
     x.domain()[0], 
-    d3.max(dataNew, function(d) { return parseTime2(d.Date); })
+    d3.max(dataNew, function(d) { return parseTime2(d.Date).addDays(35); })
     ]
     );
   
   y.domain(
     [
-    y.domain()[0], 
+    0, 
     d3.max(dataNew, function(d) { return d.ClosePrice; })
     ]
     );
@@ -180,12 +186,12 @@ showInfo  = function(data, tabletop){
     .data(dataNew)
     .enter()
     .append("circle")
-    .attr("cx", function(d){return x(parseTime2(d.Date))})
+    .attr("cx", function(d){return x(parseTime2(d.Date).addDays(30))})
     .attr("cy", function(d){return y(d.ClosePrice)})
     .attr("r", 0)
     .attr("fill", "lightgrey")
     .transition()
-    .delay(function(d, i){return i*1500;})
+    .delay(function(d, i){return i*250;})
     .attr("r", 4)
     .transition()
     .attr("r", 3)
