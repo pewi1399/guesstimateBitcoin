@@ -114,22 +114,35 @@ svg.append("g")
     .append("text")
     .attr("id", "_yr");
     
-redraw = function(){
-
+showInfo  = function(data, tabletop){
+/*
   var dataNew = [{"Date":"2017-09-15","ClosePrice":4000.44},{"Date":"2017-09-15","ClosePrice":3200.2},{"Date":"2017-09-15","ClosePrice":9000.25},{"Date":"2017-09-15","ClosePrice":6000.74}
   ,{"Date":"2017-09-15","ClosePrice":3330.44},{"Date":"2017-09-15","ClosePrice":2045.2},{"Date":"2017-09-15","ClosePrice":4300.25},{"Date":"2017-09-15","ClosePrice":1000.74}]
+  */
+  var dataNew = data
+
+  dataNew = JSON.parse(JSON.stringify(dataNew).split('Bitcoin rate in USD 30 days from now?').join('ClosePrice'));
+  dataNew = JSON.parse(JSON.stringify(dataNew).split('Timestamp').join('Date'));
+  dataNew = JSON.parse(JSON.stringify(dataNew).split('Name (optional)').join('Name'));
   
+  dataNew.forEach(function(d){ d.Date = d.Date.split(' ')[0]})
+  
+  /*
   var xs = data.map(function(d) { return d.Date; }) 
- 
   var xs = xs.concat("2017-09-15", "2017-10-15", "2017-10-15", "2017-09-15", "2017-09-15", "2017-09-15", "2017-09-15");
- 
-  var xs = xs.map(function(d) { return parseTime(d); }) 
- 
+  */
+  var parseTime2 = d3.timeParse("%d/%m/%Y");
+
   // update scale domains
-  x.domain(d3.extent(xs));
+  x.domain([
+    x.domain()[0], 
+    d3.max(dataNew, function(d) { return parseTime2(d.Date); })
+    ]
+    );
+  
   y.domain(
     [
-    d3.min(data, function(d) { return d.ClosePrice; }), 
+    y.domain()[0], 
     d3.max(dataNew, function(d) { return d.ClosePrice; })
     ]
     );
@@ -167,7 +180,7 @@ redraw = function(){
     .data(dataNew)
     .enter()
     .append("circle")
-    .attr("cx", function(d){return x(parseTime(d.Date))})
+    .attr("cx", function(d){return x(parseTime2(d.Date))})
     .attr("cy", function(d){return y(d.ClosePrice)})
     .attr("r", 0)
     .attr("fill", "lightgrey")

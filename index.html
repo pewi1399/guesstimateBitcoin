@@ -12,6 +12,7 @@
 	<link rel="stylesheet" href="src/bootstrap.3.3.7/css/bootstrap.min.css">
 
 	<script src="src/jquery-3.1.1.min.js"></script>
+	<script src="src/tabletop.js"></script>
 	<script src="src/d3v4/d3.min.js"></script>
 	<script src="data/coindata.js"></script>
 	<script src="src/bootstrap.3.3.7/js/bootstrap.min.js"></script>
@@ -19,7 +20,16 @@
 
 	<script type="text/javascript">
   $(document).ready(function(){
-});
+}); 
+/*
+var public_spreadsheet_url = 'https://docs.google.com/spreadsheets/d/1wBMaVV6LQ7wKMcbagN_VjEotJGOgX8veGSRKb-Hjy9Q/pubhtml';
+	  
+	  function init() {
+		Tabletop.init( { key: public_spreadsheet_url,
+						 callback: showInfo,
+						 simpleSheet: true } )
+	  }
+	  */
 	</script>
 
 <style>
@@ -66,5 +76,20 @@
 </body>
   
   <script src="src/bitcoin.js"></script>
+<script>
+	  var public_spreadsheet_url = 'https://docs.google.com/spreadsheets/d/1wBMaVV6LQ7wKMcbagN_VjEotJGOgX8veGSRKb-Hjy9Q/pubhtml';
+	  
+	  function init() {
+		Tabletop.init( { key: public_spreadsheet_url,
+						 callback: showInfo,
+						 simpleSheet: true } )
+	  }
 
+
+//  function showInfo(data, tabletop) {
+//    console.log(data)
+//    
+//    
+//  }
+</script>
 </html>
