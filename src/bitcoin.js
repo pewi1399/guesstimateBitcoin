@@ -77,13 +77,13 @@ g.selectAll(".horizontalGrid").data(y.ticks(5)).enter()
 
 g.append("g")
   .attr("class", "axis axis--y")
-  .call(d3.axisLeft(y))  
-  .append("text")
+  .call(d3.axisLeft(y).tickFormat(d => "$" + d))  
+  /*.append("text")
   .attr("transform", "rotate(-90)")
   .attr("y", 6)
   .attr("dy", "0.71em")
   .attr("fill", "#000")
-  .text("USD");
+  .text("USD");*/
   
 var path = g.append("path")
     .datum(data)
@@ -156,6 +156,7 @@ showInfo  = function(data, tabletop){
   // redraw axis  
   d3.selectAll(".axis--x")
   .transition()
+  .duration(1500)
   .call(d3.axisBottom(x))//.tickValues(x.domain().filter(function(d, i) { return !(i % 10); })).tickFormat(d3.timeFormat("%Y-%m-%d")))
     .selectAll("text")  
       .style("text-anchor", "end")
@@ -165,21 +166,34 @@ showInfo  = function(data, tabletop){
         
   g.selectAll(".axis--y")
     .transition()
+    .duration(1500)
     .call(d3.axisLeft(y))
 
-  g.selectAll(".horizontalGrid").remove()
-
-  g.selectAll(".horizontalGrid").data(y.ticks(5)).enter()
-    .append("line")
+  var grid = g.selectAll(".horizontalGrid").data(y.ticks(5))
+  
+  grid.exit().remove()
+  
+  grid.enter().append("line")
     .attr("class","horizontalGrid")
     .attr("x1", 0)
     .attr("x2", width)
     .attr("y1", function(d){ return y(d);})
     .attr("y2", function(d){ return y(d);})
+    .attr("stroke","white")
+    .transition()
+    .duration(1500)
     .attr("stroke","lightgrey")
+  
+  grid
+    .transition()
+    .duration(1500)
+    .attr("y1", function(d){ return y(d);})
+    .attr("y2", function(d){ return y(d);})
+  
     
   d3.select(".liness")
   .transition()
+  .duration(1500)
     .attr("d", line);
 
   g.selectAll(".dots")
