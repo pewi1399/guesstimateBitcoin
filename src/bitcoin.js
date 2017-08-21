@@ -1,13 +1,24 @@
 var margin = {top: 33, left: 40, right: 30, bottom: 75},
     width  = 960 - margin.left - margin.right,
-    height = 650  - margin.top  - margin.bottom
+    height = 650  - margin.top  - margin.bottom;
+
+// get date
+var parseTime = d3.timeParse("%Y-%m-%d");  
+
+Date.prototype.addDays = function(days) {
+  var dat = new Date(this.valueOf());
+  dat.setDate(dat.getDate() + days);
+  return dat;
+}
+
+var date = new Date();
+var today = date.getFullYear() + "-" + ("0" + (date.getMonth() + 1)).slice(-2) + "-" + ("0" + date.getDate()).slice(-2);
+var predictDate = parseTime(today).addDays(30).toJSON().slice(0,10)
 
 var color = d3.scaleOrdinal(d3.schemeCategory20);
 
 var x = d3.scaleTime().range([0, width]),
     y = d3.scaleLinear().rangeRound([height, 0]);
-
-var parseTime = d3.timeParse("%Y-%m-%d");
 
 var svg = d3.select("#panel1")
         .append("svg")
@@ -133,11 +144,7 @@ showInfo  = function(data, tabletop){
   */
   var parseTime2 = d3.timeParse("%d/%m/%Y");
   
-  Date.prototype.addDays = function(days) {
-  var dat = new Date(this.valueOf());
-  dat.setDate(dat.getDate() + days);
-  return dat;
-}
+
 
   // update scale domains
   x.domain([
@@ -167,7 +174,7 @@ showInfo  = function(data, tabletop){
   g.selectAll(".axis--y")
     .transition()
     .duration(1500)
-    .call(d3.axisLeft(y))
+    .call(d3.axisLeft(y).tickFormat(d => "$" + d)) 
 
   var grid = g.selectAll(".horizontalGrid").data(y.ticks(5))
   
