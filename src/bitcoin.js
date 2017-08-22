@@ -128,6 +128,29 @@ svg.append("g")
     .append("text")
     .attr("id", "_yr");
     
+// test voronoi overlay
+var sites = d3.range(100)
+    .map(function(d) { return [Math.random() * width, Math.random() * height]; });
+    
+var sites = [[100, 200], [200, 100], [150, 150]]
+
+var voronoi = d3.voronoi()
+    .extent([[0, 0], [width, height]]);
+
+var polygon = g.append("g")
+    .attr("class", "polygons")
+  .selectAll("path")
+  .data(voronoi.polygons(sites))
+  .enter().append("path")
+    .attr("fill", "none")
+    .attr("stroke", "black")
+    .call(redrawPolygon);
+    
+function redrawPolygon(polygon) {
+  polygon
+      .attr("d", function(d) { return d ? "M" + d.join("L") + "Z" : null; });
+}
+    
 showInfo  = function(data, tabletop){
 /*
   var dataNew = [{"Date":"2017-09-15","ClosePrice":4000.44},{"Date":"2017-09-15","ClosePrice":3200.2},{"Date":"2017-09-15","ClosePrice":9000.25},{"Date":"2017-09-15","ClosePrice":6000.74}
