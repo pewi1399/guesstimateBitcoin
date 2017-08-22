@@ -12,8 +12,11 @@ Date.prototype.addDays = function(days) {
 }
 
 var date = new Date();
-var today = date.getFullYear() + "-" + ("0" + (date.getMonth() + 1)).slice(-2) + "-" + ("0" + date.getDate()).slice(-2);
+var today = date.toISOString().substring(0, 10);
 var predictDate = parseTime(today).addDays(30).toJSON().slice(0,10)
+
+// print forecast date
+$(".predictDate").html(predictDate)
 
 var color = d3.scaleOrdinal(d3.schemeCategory20);
 
@@ -217,5 +220,25 @@ showInfo  = function(data, tabletop){
     .transition()
     .attr("r", 3)
     .attr("fill", "royalblue")
+    
+  var rate = Number($(".rate").val()),
+  date = parseTime(predictDate),
+  name = $(".name").val(),
+  dataDot = [{"ClosePrice":rate, "Date":date, "Name":name }]
+
+  g.selectAll(".currentDot")
+    .data(dataDot)
+    .enter()
+    .append("circle")
+    .attr("cx", function(d){return x(d.Date)})
+    .attr("cy", function(d){return y(d.ClosePrice)})
+    .attr("r", 0)
+    .attr("fill", "orange")
+    .transition()
+    .delay(function(d, i){return i*250;})
+    .attr("r", 4)
+    .transition()
+    .attr("r", 3)
+    .attr("fill", "red")
        
 }
