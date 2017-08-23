@@ -132,8 +132,8 @@ svg.append("g")
 var sites = d3.range(100)
     .map(function(d) { return [Math.random() * width, Math.random() * height]; });
     
-var sites = [[100, 200], [200, 100], [150, 150]]
-
+var sites = [[100, 200, "apa"], [200, 100, "get"], [150, 150, "ko"]]
+/*
 var voronoi = d3.voronoi()
     .extent([[0, 0], [width, height]]);
 
@@ -150,6 +150,41 @@ function redrawPolygon(polygon) {
   polygon
       .attr("d", function(d) { return d ? "M" + d.join("L") + "Z" : null; });
 }
+*/
+// copy from beeswarm block
+  var cell = g.append("g")
+      .attr("class", "cells")
+    .selectAll("g").data(d3.voronoi()
+        .extent([[0, 0], [width + margin.right, height + margin.top]])
+      .polygons(sites)).enter().append("g");
+
+  cell.append("circle")
+      .attr("r", 3)
+      .attr("fill", "red")
+      .attr("cx", function(d) { return d.data[0]; })
+      .attr("cy", function(d) { return d.data[1]; });
+      
+  cell.append("path")
+    .attr("stroke", "black")
+    .attr("fill", "none")
+    .attr("d", function(d) { return "M" + d.join("L") + "Z"; })
+    .on("mouseover", mouseover)
+    .on("mouseout", mouseout);
+
+  function mouseover(d) {
+    console.log("on" + d)
+    /*d3.select(d.data.city.line).classed("city--hover", true);
+    d.data.city.line.parentNode.appendChild(d.data.city.line);
+    focus.attr("transform", "translate(" + x(d.data.date) + "," + y(d.data.value) + ")");
+    focus.select("text").text(d.data.city.name);*/
+  }
+
+  function mouseout(d) {
+    console.log("out" + d)
+    /*d3.select(d.data.city.line).classed("city--hover", false);
+    focus.attr("transform", "translate(-100,-100)");*/
+  }
+// end of beeswarm
     
 showInfo  = function(data, tabletop){
 /*
