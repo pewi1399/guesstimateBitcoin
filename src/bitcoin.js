@@ -1,4 +1,4 @@
-var margin = {top: 33, left: 40, right: 30, bottom: 75},
+var margin = {top: 33, left: 50, right: 30, bottom: 75},
     width  = 960 - margin.left - margin.right,
     height = 650  - margin.top  - margin.bottom;
 
@@ -62,14 +62,6 @@ g.append("g")
         .attr("dy", ".2em")
         .attr("transform", "rotate(-65)")
         
-// add the Y gridlines
-/*g.append("g")			
-    .attr("class", "grid")
-    .call(make_y_gridlines()
-        .tickSize(-width)
-        .tickFormat("")
-    )
-*/
 // add bitcoin watermark
 g.selectAll(".watermark")
   .data([1])
@@ -124,7 +116,6 @@ path
     .duration(3000)
     .attr("stroke-dashoffset", 0);
 
-
     
 showInfo  = function(data, tabletop){
 /*
@@ -139,25 +130,19 @@ showInfo  = function(data, tabletop){
   
   dataNew.forEach(function(d){ d.Date = d.Date.split(' ')[0]})
   
-  /*
-  var xs = data.map(function(d) { return d.Date; }) 
-  var xs = xs.concat("2017-09-15", "2017-10-15", "2017-10-15", "2017-09-15", "2017-09-15", "2017-09-15", "2017-09-15");
-  */
   var parseTime2 = d3.timeParse("%d/%m/%Y");
-  
-
 
   // update scale domains
   x.domain([
     x.domain()[0], 
-    d3.max(dataNew, function(d) { return parseTime2(d.Date).addDays(35); })
+    d3.max(dataNew, function(d) { return parseTime2(d.Date).addDays(forecast_horizon + 5); })
     ]
     );
   
   y.domain(
     [
     0, 
-    d3.max(dataNew, function(d) { return d.ClosePrice; })
+    d3.max(dataNew, function(d) { return Number(d.ClosePrice); })
     ]
     );
   
@@ -197,53 +182,17 @@ showInfo  = function(data, tabletop){
     .duration(1500)
     .attr("y1", function(d){ return y(d);})
     .attr("y2", function(d){ return y(d);})
-  
     
   d3.select(".liness")
   .transition()
   .duration(1500)
     .attr("d", line);
-
-  g.selectAll(".dots")
-    .data(dataNew)
-    .enter()
-    .append("circle")
-    .attr("cx", function(d){return x(parseTime2(d.Date).addDays(forecast_horizon))})
-    .attr("cy", function(d){return y(d.ClosePrice)})
-    .attr("r", 0)
-    .attr("fill", "lightgrey")
-    .transition()
-    .delay(function(d, i){return i*250;})
-    .attr("r", 4)
-    .transition()
-    .attr("r", 3)
-    .attr("fill", "royalblue")
-    
-  var rate = Number($(".rate").val()),
-  date = parseTime(predictDate),
-  name = $(".name").val(),
-  dataDot = [{"ClosePrice":rate, "Date":date, "Name":name }]
-
-  g.selectAll(".currentDot")
-    .data(dataDot)
-    .enter()
-    .append("circle")
-    .attr("cx", function(d){return x(d.Date)})
-    .attr("cy", function(d){return y(d.ClosePrice)})
-    .attr("r", 0)
-    .attr("fill", "orange")
-    .transition()
-    .delay(function(d, i){return i*250;})
-    .attr("r", 4)
-    .transition()
-    .attr("r", 3)
-    .attr("fill", "red")
     
     // test voronoi overlay
 var sites = d3.range(100)
     .map(function(d) { return [Math.random() * width, Math.random() * height]; });
     
-var sites = dataNew.map(function(d){return [x(parseTime2(d.Date).addDays(30))+Math.random(), y(d.ClosePrice)+Math.random(), d.Name]});
+var sites = dataNew.map(function(d){return [x(parseTime2(d.Date).addDays(forecast_horizon))+Math.random(), y(d.ClosePrice)+Math.random(), d.Name]});
 
 svg.append("g")
     .attr("class", "infowin")
@@ -266,7 +215,7 @@ svg.append("g")
 
   cell.append("circle")
       .attr("r", 3)
-      .attr("fill", "red")
+      .attr("fill", "royalblue")
       .attr("cx", function(d) { return d.data[0]; })
       .attr("cy", function(d) { return d.data[1]; });
       
@@ -294,4 +243,8 @@ svg.append("g")
   }
 // end of beeswarm
        
+}
+
+function starter(){
+  setTimeout(init(), 2000)
 }
