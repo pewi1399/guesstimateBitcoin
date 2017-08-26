@@ -128,7 +128,13 @@ showInfo  = function(data, tabletop){
   dataNew = JSON.parse(JSON.stringify(dataNew).split('Timestamp').join('Date'));
   dataNew = JSON.parse(JSON.stringify(dataNew).split('Name (optional)').join('Name'));
   
-  dataNew.forEach(function(d){ d.Date = d.Date.split(' ')[0]})
+  dataNew.forEach(function(d){ 
+      d.Date = d.Date.split(' ')[0]
+      if(d.ClosePrice >= 40000){
+        d.ClosePrice = 40000
+      }
+    }
+    )
   
   var parseTime2 = d3.timeParse("%d/%m/%Y");
 
@@ -248,3 +254,101 @@ svg.append("g")
 function starter(){
   setTimeout(init(), 2000)
 }
+// ------------------------------ mousover tooltip -----------------------------
+////////////////////////////////////////////////////////////////////////////////
+//--------------------------- mouseover effects --------------------------------
+//-------------------------------- line ----------------------------------------
+////////////////////////////////////////////////////////////////////////////////
+
+// Define the div for the tooltip
+var div2 = d3.select("body").append("div")
+    .attr("class", "tooltip")
+    .style("opacity", 0)
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+// add a placeholder for the effects (PW)
+var mouseG = svg
+  .on('mouseout', function() { // on mouse out hide line, circles and text
+   // d3.select(".mouse-line")
+   //   .style("opacity", "0");
+    d3.selectAll(".mouse-per-line circle")
+      .style("opacity", "0");
+    d3.selectAll(".mouse-per-line text")
+      .style("opacity", "0");
+  })
+  .on('mousemove', function() { // mouse moving over canvas
+      d3.selectAll(".mouse-per-line circle")
+      .style("opacity", "1");
+  
+    var mouse = d3.mouse(this);
+    d3.select(".mouse-line")
+      .attr("d", function() {
+        var d = "M" + mouse[0]+ "," + height;
+        d += " " + mouse[0] + "," + 0;
+        return d;
+      });
+
+// *** of secondary importance ***
+  // variable lines contain the actual lines (PW)
+  var lines = document.getElementsByClassName('liness');
+
+  // create g element for every line ()
+  var mousePerLine = mouseG.selectAll('.mouse-per-line')
+    .data(d3.selectAll(".liness").data())
+    .enter()
+    .append("g")
+    .attr("class", "mouse-per-line")
+		.attr("name", "mousetip")
+		.on("mouseover", function(d) {
+
+		div.transition()
+				.duration(200)
+				.style("opacity", 0.9);
+		div	.html("row one" + "<br/>"  + "row two")
+				.style("left", (d3.event.pageX) + "px")
+				.style("top", (d3.event.pageY - 28) + "px");
+		})
+		.on("mouseout", function(d) {
+		div.transition()
+				.duration(500)
+				.style("opacity", 0);
+		});
+
+  // append circles for mouseover
+  mousePerLine.append("circle")
+    .attr("r", 7)
+    .attr("stroke", "red")
+    .style("fill", "none")
+    .style("stroke-width", "1px")
+    .style("opacity", "0");
+
+// function for intersection markers
+        d3.selectAll(".mouse-per-line")
+          .attr("transform", function(d, i) {
+            //for each datapoint get the y value for the corresponding x value of
+            // the cursor stored in first position of array "mouse"
+            d = d.map(function(d){return parseTime(d.Date);})
+            //console.log(width/mouse[0])
+            var xDate = x.invert(mouse[0]), // the current value on the x scale to look for
+                bisect = d3.bisector(function(d) { return d; }).left; //
+                idx = bisect(d, xDate); //
+
+            var beginning = 0, //start searching at zero
+                end = lines[i].getTotalLength(), // entire length of line defines area of search
+                target = null; // this we would like to find out
+
+            while (true){
+              target = Math.floor((beginning + end) / 2);
+              pos = lines[i].getPointAtLength(target);
+              if ((target === end || target === beginning) && pos.x !== mouse[0]) {
+                  break;
+              }
+              if (pos.x > mouse[0])      end = target;
+              else if (pos.x < mouse[0]) beginning = target;
+              else break; //position found
+            }
+            return "translate(" + (pos.x+ margin.left) + "," + (pos.y +margin.top) +")";
+            
+            
+          });
+});
