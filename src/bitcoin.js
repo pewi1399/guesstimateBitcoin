@@ -2,6 +2,8 @@ var margin = {top: 33, left: 40, right: 30, bottom: 75},
     width  = 960 - margin.left - margin.right,
     height = 650  - margin.top  - margin.bottom;
 
+var forecast_horizon = 30
+
 // get date
 var parseTime = d3.timeParse("%Y-%m-%d");  
 
@@ -13,7 +15,7 @@ Date.prototype.addDays = function(days) {
 
 var date = new Date();
 var today = date.toISOString().substring(0, 10);
-var predictDate = parseTime(today).addDays(30).toJSON().slice(0,10)
+var predictDate = parseTime(today).addDays(forecast_horizon).toJSON().slice(0,10)
 
 // print forecast date
 $(".predictDate").html(predictDate)
@@ -122,69 +124,7 @@ path
     .duration(3000)
     .attr("stroke-dashoffset", 0);
 
-svg.append("g")
-    .attr("class", "infowin")
-    .attr("transform", "translate(70, 30)")
-    .append("text")
-    .attr("id", "_yr");
-    
-// test voronoi overlay
-var sites = d3.range(100)
-    .map(function(d) { return [Math.random() * width, Math.random() * height]; });
-    
-var sites = [[100, 200, "apa"], [200, 100, "get"], [150, 150, "ko"]]
-/*
-var voronoi = d3.voronoi()
-    .extent([[0, 0], [width, height]]);
 
-var polygon = g.append("g")
-    .attr("class", "polygons")
-  .selectAll("path")
-  .data(voronoi.polygons(sites))
-  .enter().append("path")
-    .attr("fill", "none")
-    .attr("stroke", "black")
-    .call(redrawPolygon);
-    
-function redrawPolygon(polygon) {
-  polygon
-      .attr("d", function(d) { return d ? "M" + d.join("L") + "Z" : null; });
-}
-*/
-// copy from beeswarm block
-  var cell = g.append("g")
-      .attr("class", "cells")
-    .selectAll("g").data(d3.voronoi()
-        .extent([[0, 0], [width + margin.right, height + margin.top]])
-      .polygons(sites)).enter().append("g");
-
-  cell.append("circle")
-      .attr("r", 3)
-      .attr("fill", "red")
-      .attr("cx", function(d) { return d.data[0]; })
-      .attr("cy", function(d) { return d.data[1]; });
-      
-  cell.append("path")
-    .attr("stroke", "black")
-    .attr("fill", "none")
-    .attr("d", function(d) { return "M" + d.join("L") + "Z"; })
-    .on("mouseover", mouseover)
-    .on("mouseout", mouseout);
-
-  function mouseover(d) {
-    console.log("on" + d)
-    /*d3.select(d.data.city.line).classed("city--hover", true);
-    d.data.city.line.parentNode.appendChild(d.data.city.line);
-    focus.attr("transform", "translate(" + x(d.data.date) + "," + y(d.data.value) + ")");
-    focus.select("text").text(d.data.city.name);*/
-  }
-
-  function mouseout(d) {
-    console.log("out" + d)
-    /*d3.select(d.data.city.line).classed("city--hover", false);
-    focus.attr("transform", "translate(-100,-100)");*/
-  }
-// end of beeswarm
     
 showInfo  = function(data, tabletop){
 /*
@@ -268,7 +208,7 @@ showInfo  = function(data, tabletop){
     .data(dataNew)
     .enter()
     .append("circle")
-    .attr("cx", function(d){return x(parseTime2(d.Date).addDays(30))})
+    .attr("cx", function(d){return x(parseTime2(d.Date).addDays(forecast_horizon))})
     .attr("cy", function(d){return y(d.ClosePrice)})
     .attr("r", 0)
     .attr("fill", "lightgrey")
@@ -298,5 +238,60 @@ showInfo  = function(data, tabletop){
     .transition()
     .attr("r", 3)
     .attr("fill", "red")
+    
+    // test voronoi overlay
+var sites = d3.range(100)
+    .map(function(d) { return [Math.random() * width, Math.random() * height]; });
+    
+var sites = dataNew.map(function(d){return [x(parseTime2(d.Date).addDays(30))+Math.random(), y(d.ClosePrice)+Math.random(), d.Name]});
+
+svg.append("g")
+    .attr("class", "infowin")
+    .attr("transform", "translate(70, 30)")
+    .append("text")
+    .attr("id", "nameText");
+
+svg.append("g")
+    .attr("class", "infowin")
+    .attr("transform", "translate(200, 30)")
+    .append("text")
+    .attr("id","forecastText");
+ 
+// copy from beeswarm block
+  var cell = g.append("g")
+      .attr("class", "cells")
+    .selectAll("g").data(d3.voronoi()
+        .extent([[0, 0], [width + margin.right, height + margin.top]])
+      .polygons(sites).filter(function(d){return d;})).enter().append("g");
+
+  cell.append("circle")
+      .attr("r", 3)
+      .attr("fill", "red")
+      .attr("cx", function(d) { return d.data[0]; })
+      .attr("cy", function(d) { return d.data[1]; });
+      
+  cell.append("path")
+    .attr("stroke", "none")
+    .attr("fill", "none")
+    .attr("d", function(d) { return "M" + d.join("L") + "Z"; })
+    .on("mouseover", mouseover)
+    .on("mouseout", mouseout);
+
+  function mouseover(d) {
+    d3.select("#nameText").text("Name: " + d.data[2])
+    d3.select("#forecastText").text("Forecast: " + Math.round(y.invert(d.data[1])))
+    /*d3.select(d.data.city.line).classed("city--hover", true);
+    d.data.city.line.parentNode.appendChild(d.data.city.line);
+    focus.attr("transform", "translate(" + x(d.data.date) + "," + y(d.data.value) + ")");
+    focus.select("text").text(d.data.city.name);*/
+  }
+
+  function mouseout(d) {
+    d3.select("#nameText").text("")
+    d3.select("#forecastText").text("")
+    /*d3.select(d.data.city.line).classed("city--hover", false);
+    focus.attr("transform", "translate(-100,-100)");*/
+  }
+// end of beeswarm
        
 }
