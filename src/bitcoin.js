@@ -15,7 +15,7 @@ Date.prototype.addDays = function(days) {
 
 var date = new Date();
 var today = date.toISOString().substring(0, 10);
-var predictDate = parseTime(today).addDays(forecast_horizon).toJSON().slice(0,10)
+var predictDate = parseTime(today).addDays(forecast_horizon + 1).toJSON().slice(0,10)
 
 // print forecast date
 $(".predictDate").html(predictDate)
@@ -198,20 +198,22 @@ showInfo  = function(data, tabletop){
 var sites = d3.range(100)
     .map(function(d) { return [Math.random() * width, Math.random() * height]; });
     
-var sites = dataNew.map(function(d){return [x(parseTime2(d.Date).addDays(forecast_horizon))+Math.random(), y(d.ClosePrice)+Math.random(), d.Name]});
+var sites = dataNew.map(function(d){return [x(parseTime2(d.Date).addDays(forecast_horizon))+Math.random(), y(d.ClosePrice), d.Name]});
 
 svg.append("g")
     .attr("class", "infowin")
-    .attr("transform", "translate(70, 30)")
+    .attr("transform", "translate(70, 60)")
     .append("text")
     .attr("id", "nameText");
 
 svg.append("g")
     .attr("class", "infowin")
-    .attr("transform", "translate(200, 30)")
+    .attr("transform", "translate(200, 60)")
     .append("text")
     .attr("id","forecastText");
- 
+
+
+    
 // copy from beeswarm block
   var cell = g.append("g")
       .attr("class", "cells")
@@ -259,6 +261,17 @@ function starter(){
 //--------------------------- mouseover effects --------------------------------
 //-------------------------------- line ----------------------------------------
 ////////////////////////////////////////////////////////////////////////////////
+svg.append("g")
+    .attr("class", "infowin")
+    .attr("transform", "translate(70, 40)")
+    .append("text")
+    .attr("id", "dateText");
+
+svg.append("g")
+    .attr("class", "infowin")
+    .attr("transform", "translate(200, 40)")
+    .append("text")
+    .attr("id","rateText"); 
 
 // Define the div for the tooltip
 var div2 = d3.select("body").append("div")
@@ -299,25 +312,25 @@ var mouseG = svg
     .append("g")
     .attr("class", "mouse-per-line")
 		.attr("name", "mousetip")
-		.on("mouseover", function(d) {
+		/*.on("mouseover", function(d) {
 
 		div.transition()
 				.duration(200)
 				.style("opacity", 0.9);
 		div	.html("row one" + "<br/>"  + "row two")
 				.style("left", (d3.event.pageX) + "px")
-				.style("top", (d3.event.pageY - 28) + "px");
+				.style("top", (d3.event.pageY) + "px");
 		})
 		.on("mouseout", function(d) {
 		div.transition()
 				.duration(500)
 				.style("opacity", 0);
-		});
+		});*/
 
   // append circles for mouseover
   mousePerLine.append("circle")
     .attr("r", 7)
-    .attr("stroke", "red")
+    .attr("stroke", "royalblue")
     .style("fill", "none")
     .style("stroke-width", "1px")
     .style("opacity", "0");
@@ -328,9 +341,12 @@ var mouseG = svg
             //for each datapoint get the y value for the corresponding x value of
             // the cursor stored in first position of array "mouse"
             d = d.map(function(d){return parseTime(d.Date);})
-            //console.log(width/mouse[0])
+            
+            // adjust mouse coords
+            mouse[0] = mouse[0] - margin.left
+            
             var xDate = x.invert(mouse[0]), // the current value on the x scale to look for
-                bisect = d3.bisector(function(d) { return d; }).left; //
+                bisect = d3.bisector(function(d) { return d; }).right; //
                 idx = bisect(d, xDate); //
 
             var beginning = 0, //start searching at zero
@@ -347,7 +363,10 @@ var mouseG = svg
               else if (pos.x < mouse[0]) beginning = target;
               else break; //position found
             }
-            return "translate(" + (pos.x+ margin.left) + "," + (pos.y +margin.top) +")";
+            
+              d3.select("#rateText").text("Price: " + Math.round(y.invert(pos.y)))//"Price: " + Math.Round(y.invert(pos.y)))
+              d3.select("#dateText").text("Date: " + x.invert(mouse[0]).toJSON().split('T')[0])
+            return "translate(" + (mouse[0]+margin.left) + "," + (pos.y +margin.top) +")";
             
             
           });
