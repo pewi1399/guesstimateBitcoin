@@ -133,6 +133,8 @@ showInfo  = function(data, tabletop){
       if(d.ClosePrice >= 40000){
         d.ClosePrice = 40000
       }
+      if(d.ClosePrice <= 0)
+       d.ClosePrice = 0
     }
     )
   
