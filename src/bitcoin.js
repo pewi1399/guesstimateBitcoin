@@ -222,8 +222,8 @@ svg.append("g")
       .polygons(sites).filter(function(d){return d;})).enter().append("g");
 
   cell.append("circle")
-      .attr("r", 3)
-      .attr("fill", "royalblue")
+      .attr("r", 4)
+      .attr("fill", "steelblue")
       .attr("cx", function(d) { return d.data[0]; })
       .attr("cy", function(d) { return d.data[1]; });
       
@@ -330,7 +330,7 @@ var mouseG = svg
   // append circles for mouseover
   mousePerLine.append("circle")
     .attr("r", 7)
-    .attr("stroke", "royalblue")
+    .attr("stroke", "steelblue")
     .style("fill", "none")
     .style("stroke-width", "1px")
     .style("opacity", "0");
@@ -348,6 +348,7 @@ var mouseG = svg
             var xDate = x.invert(mouse[0]), // the current value on the x scale to look for
                 bisect = d3.bisector(function(d) { return d; }).right; //
                 idx = bisect(d, xDate); //
+              if(idx >0 & idx < d.length){
 
             var beginning = 0, //start searching at zero
                 end = lines[i].getTotalLength(), // entire length of line defines area of search
@@ -367,7 +368,7 @@ var mouseG = svg
               d3.select("#rateText").text("Price: " + Math.round(y.invert(pos.y)))//"Price: " + Math.Round(y.invert(pos.y)))
               d3.select("#dateText").text("Date: " + x.invert(mouse[0]).toJSON().split('T')[0])
             return "translate(" + (mouse[0]+margin.left) + "," + (pos.y +margin.top) +")";
-            
+              }
             
           });
 });
