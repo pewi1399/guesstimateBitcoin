@@ -27,7 +27,7 @@ var x = d3.scaleTime().range([0, width]),
 
 var svg = d3.select("#panel1")
         .append("svg")
-        .attr("preserveAspectRatio", "xMinYMin meet")
+        //.attr("preserveAspectRatio", "xMinYMin meet")
         .attr("viewBox","0 0 " + (width + margin.left + margin.right)  + " " + (height + margin.top + margin.bottom))
         .classed("svg-content-responsive", true)
 
@@ -334,7 +334,7 @@ var mouseG = svg
     .attr("r", 7)
     .attr("stroke", "steelblue")
     .style("fill", "none")
-    .style("stroke-width", "1px")
+    .style("stroke-width", "2px")
     .style("opacity", "0");
 
 // function for intersection markers
