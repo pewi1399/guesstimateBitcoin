@@ -1,6 +1,6 @@
 library(dplyr)
 library(jsonlite)
-bitcoin <- read.csv("data/coindata3.csv", header = TRUE)
+bitcoin <- read.csv("data/coindata4.csv", header = TRUE)
 
 names(bitcoin) <- c("Date", "ClosePrice")
 

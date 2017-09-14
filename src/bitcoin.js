@@ -85,7 +85,7 @@ g.selectAll(".horizontalGrid").data(y.ticks(5)).enter()
 
 g.append("g")
   .attr("class", "axis axis--y")
-  .call(d3.axisLeft(y).tickFormat(d => "$" + d))  
+  .call(d3.axisLeft(y))//.tickFormat(d => "$" + d))  
   /*.append("text")
   .attr("transform", "rotate(-90)")
   .attr("y", 6)
@@ -168,7 +168,7 @@ showInfo  = function(data, tabletop){
   g.selectAll(".axis--y")
     .transition()
     .duration(1500)
-    .call(d3.axisLeft(y).tickFormat(d => "$" + d)) 
+    .call(d3.axisLeft(y))//.tickFormat(d => "$" + d)) 
 
   var grid = g.selectAll(".horizontalGrid").data(y.ticks(5))
   
@@ -204,13 +204,13 @@ var sites = dataNew.map(function(d){return [x(parseTime2(d.Date).addDays(forecas
 
 svg.append("g")
     .attr("class", "infowin")
-    .attr("transform", "translate(70, 60)")
+    .attr("transform", "translate(70, 50)")
     .append("text")
     .attr("id", "nameText");
 
 svg.append("g")
     .attr("class", "infowin")
-    .attr("transform", "translate(200, 60)")
+    .attr("transform", "translate(200, 50)")
     .append("text")
     .attr("id","forecastText");
 
@@ -265,13 +265,13 @@ function starter(){
 ////////////////////////////////////////////////////////////////////////////////
 svg.append("g")
     .attr("class", "infowin")
-    .attr("transform", "translate(70, 40)")
+    .attr("transform", "translate(70, 20)")
     .append("text")
     .attr("id", "dateText");
 
 svg.append("g")
     .attr("class", "infowin")
-    .attr("transform", "translate(200, 40)")
+    .attr("transform", "translate(200, 20)")
     .append("text")
     .attr("id","rateText"); 
 
