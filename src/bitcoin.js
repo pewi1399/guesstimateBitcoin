@@ -92,6 +92,9 @@ g.append("g")
   .attr("dy", "0.71em")
   .attr("fill", "#000")
   .text("USD");*/
+
+// hack to get prefix to work on IE also
+d3.selectAll(".axis--y").selectAll(".tick").selectAll("text").text(function(d){return "$" + d})
   
 var path = g.append("path")
     .datum(data)
@@ -169,6 +172,10 @@ showInfo  = function(data, tabletop){
     .transition()
     .duration(1500)
     .call(d3.axisLeft(y))//.tickFormat(d => "$" + d)) 
+  
+  // hack to get prefix working acros platforms  
+  d3.selectAll(".axis--y").selectAll(".tick").selectAll("text").text(function(d){return "$" + d})
+  
 
   var grid = g.selectAll(".horizontalGrid").data(y.ticks(5))
   
